@@ -1,0 +1,273 @@
+<context>
+# Overview  
+한국 환경에 맞는 MCP (Model Context Protocol) 서버 구축 프로젝트입니다. 이 프로젝트는 초급 개발자들이 MCP 서버를 구성하고 기성 LLM(대형 언어 모델)과 연결하는 방법을 학습할 수 있도록 실습 중심의 매뉴얼과 소스 코드를 제공합니다.
+
+주요 목표:
+- Python과 SpringBoot 두 가지 기술 스택으로 MCP 서버 구현
+- 대한민국 지역별 날씨, 기온, 미세먼지 정보 조회 기능 제공
+- 초급 개발자도 따라할 수 있는 상세한 매뉴얼 작성
+- 실제 동작하는 완전한 예제 코드 제공
+
+이 프로젝트는 개발자들이 MCP 프로토콜을 이해하고, LLM과의 통합 방법을 실습할 수 있도록 돕는 교육용 프로젝트입니다.
+
+# Core Features  
+## 1. 지역별 날씨 조회 기능
+- **기능**: 대한민국 주요 도시별 현재 날씨 정보 조회
+- **중요성**: MCP 서버의 기본적인 외부 API 연동 패턴 학습
+- **동작 방식**: 기상청 API 또는 공공데이터 API를 활용하여 날씨 정보를 가져와 JSON 형태로 반환
+
+## 2. 기온 조회 기능
+- **기능**: 특정 지역의 현재 기온 및 체감온도 조회
+- **중요성**: 데이터 파싱 및 가공 방법 학습
+- **동작 방식**: 날씨 API에서 기온 데이터를 추출하여 구조화된 형태로 제공
+
+## 3. 미세먼지 조회 기능
+- **기능**: 지역별 미세먼지(PM10, PM2.5) 농도 조회
+- **중요성**: 다양한 공공 API 활용 방법 학습
+- **동작 방식**: 환경부 대기질 API를 연동하여 미세먼지 정보 제공
+
+## 4. 매뉴얼 작성
+- **기능**: Python 및 SpringBoot 각각에 대한 상세한 설정 및 구현 가이드
+- **중요성**: 초급 개발자도 따라할 수 있는 명확한 문서화
+- **동작 방식**: 단계별 설치, 설정, 실행 가이드를 마크다운 형식으로 제공
+
+# User Experience  
+## User Personas
+- **초급 개발자**: Python 또는 Java 기초 지식은 있으나 MCP 프로토콜은 처음 접하는 개발자
+- **학습자**: LLM 통합 방법을 학습하고자 하는 개발자
+- **교육자**: MCP 서버 구축을 가르치는 강사나 멘토
+
+## Key User Flows
+1. **프로젝트 설정**: 저장소 클론 → 의존성 설치 → 환경 변수 설정
+2. **MCP 서버 실행**: Python 또는 SpringBoot 서버 시작 → 포트 확인
+3. **LLM 연결**: Claude Desktop 또는 다른 MCP 클라이언트에 서버 등록
+4. **기능 테스트**: LLM을 통해 날씨/기온/미세먼지 조회 요청 → 결과 확인
+5. **매뉴얼 참조**: 문제 발생 시 매뉴얼의 트러블슈팅 섹션 확인
+
+## UI/UX Considerations
+- 명령줄 기반 인터페이스 (CLI)
+- JSON 형식의 응답으로 일관성 유지
+- 에러 메시지는 명확하고 해결 방법을 포함
+- 매뉴얼은 스크린샷과 예제 코드를 풍부하게 포함
+</context>
+<PRD>
+# Technical Architecture  
+## System Components
+
+### Python 구현
+- **언어**: Python 3.9+
+- **프레임워크**: FastAPI 또는 Flask
+- **MCP 라이브러리**: mcp-python-sdk (또는 직접 구현)
+- **HTTP 클라이언트**: requests 또는 httpx
+- **의존성 관리**: requirements.txt, Poetry, 또는 pipenv
+
+### SpringBoot 구현
+- **언어**: Java 17+
+- **프레임워크**: Spring Boot 3.x
+- **빌드 도구**: Maven 또는 Gradle
+- **HTTP 클라이언트**: Spring WebClient 또는 RestTemplate
+- **의존성 관리**: Maven pom.xml 또는 Gradle build.gradle
+
+## Data Models
+
+### 날씨 정보 모델
+```json
+{
+  "location": "서울",
+  "temperature": 15.5,
+  "humidity": 65,
+  "description": "맑음",
+  "timestamp": "2024-11-21T10:00:00Z"
+}
+```
+
+### 미세먼지 정보 모델
+```json
+{
+  "location": "서울",
+  "pm10": 45,
+  "pm25": 28,
+  "grade": "보통",
+  "timestamp": "2024-11-21T10:00:00Z"
+}
+```
+
+## APIs and Integrations
+
+### 외부 API 연동
+1. **기상청 단기예보 API** (공공데이터포털)
+   - 날씨 및 기온 정보 제공
+   - API Key 필요
+   - RESTful API
+
+2. **환경부 대기질 API** (공공데이터포털)
+   - 미세먼지 정보 제공
+   - API Key 필요
+   - RESTful API
+
+### MCP Protocol
+- MCP 서버는 표준 MCP 프로토콜을 준수
+- JSON-RPC 2.0 기반 통신
+- Tools, Resources, Prompts 지원
+
+### LLM 연결
+- Claude Desktop (MCP 클라이언트)
+- 또는 다른 MCP 호환 클라이언트
+- 설정 파일을 통한 서버 등록
+
+## Infrastructure Requirements
+- **개발 환경**: 로컬 개발 머신
+- **포트**: Python (8000), SpringBoot (8080) - 기본값
+- **네트워크**: 인터넷 연결 (외부 API 호출용)
+- **저장소**: Git 저장소 (GitHub 등)
+- **문서**: Markdown 형식의 매뉴얼
+
+# Development Roadmap  
+## Phase 1: MVP - 기본 MCP 서버 구조
+- Python 및 SpringBoot 프로젝트 기본 구조 생성
+- MCP 프로토콜 기본 구현 (핸들러, 라우팅)
+- 간단한 "Hello World" MCP Tool 구현
+- 각 기술 스택별 기본 매뉴얼 작성 (설치, 실행)
+
+## Phase 2: 날씨 조회 기능 구현
+- 기상청 API 연동 (Python)
+- 기상청 API 연동 (SpringBoot)
+- 날씨 조회 MCP Tool 구현
+- API Key 관리 및 환경 변수 설정
+- 에러 처리 및 예외 상황 대응
+- 매뉴얼 업데이트 (날씨 조회 기능 섹션)
+
+## Phase 3: 기온 조회 기능 구현
+- 날씨 API에서 기온 데이터 추출 및 파싱
+- 기온 조회 MCP Tool 구현 (Python)
+- 기온 조회 MCP Tool 구현 (SpringBoot)
+- 체감온도 계산 로직 추가 (선택사항)
+- 매뉴얼 업데이트 (기온 조회 기능 섹션)
+
+## Phase 4: 미세먼지 조회 기능 구현
+- 환경부 대기질 API 연동 (Python)
+- 환경부 대기질 API 연동 (SpringBoot)
+- 미세먼지 조회 MCP Tool 구현
+- 등급 판정 로직 구현 (좋음/보통/나쁨 등)
+- 매뉴얼 업데이트 (미세먼지 조회 기능 섹션)
+
+## Phase 5: LLM 연결 및 통합 테스트
+- Claude Desktop 설정 가이드 작성
+- MCP 서버 등록 방법 문서화
+- 각 기능별 통합 테스트 시나리오 작성
+- 실제 LLM을 통한 E2E 테스트 수행
+- 트러블슈팅 가이드 작성
+
+## Phase 6: 문서화 및 최종 정리
+- 전체 매뉴얼 통합 및 검토
+- 코드 주석 및 문서화
+- README 파일 작성
+- 프로젝트 구조 정리
+- 최종 테스트 및 버그 수정
+
+# Logical Dependency Chain
+## Foundation (필수 선행 작업)
+1. **프로젝트 구조 생성**: Python과 SpringBoot 각각의 기본 프로젝트 구조
+2. **MCP 프로토콜 기본 구현**: 핸들러, 라우팅, 기본 통신 구조
+3. **환경 설정**: 의존성 설치, 환경 변수 관리 방법
+
+## Core Features (순차적 구현)
+1. **날씨 조회**: 가장 기본적인 외부 API 연동 예제
+   - 이 기능을 먼저 구현하여 API 연동 패턴을 확립
+   - 이후 기능들의 기반이 됨
+
+2. **기온 조회**: 날씨 API의 데이터를 활용한 파생 기능
+   - 날씨 조회 기능이 완성된 후 구현
+   - 데이터 파싱 및 가공 방법 학습
+
+3. **미세먼지 조회**: 별도 API 연동이지만 동일한 패턴 적용
+   - 날씨 조회와 유사한 구조이므로 패턴 재사용 가능
+
+## Integration & Documentation
+1. **기능별 테스트**: 각 기능 구현 후 즉시 단위 테스트 작성
+2. **매뉴얼 업데이트**: 기능 구현과 동시에 매뉴얼 작성 (실시간 문서화)
+3. **통합 테스트**: 모든 기능 완성 후 E2E 테스트
+4. **최종 문서화**: 모든 기능과 테스트 완료 후 전체 매뉴얼 통합
+
+# Risks and Mitigations  
+## Technical Challenges
+
+### MCP 프로토콜 이해도 부족
+- **위험**: 초급 개발자가 MCP 프로토콜을 이해하지 못할 수 있음
+- **완화**: 매뉴얼에 MCP 프로토콜 기본 개념 설명 섹션 추가, 간단한 다이어그램 포함
+
+### 외부 API 의존성
+- **위험**: 기상청/환경부 API가 변경되거나 장애 발생 시 서비스 중단
+- **완화**: Mock 데이터 제공, API 장애 시 대체 응답 로직 구현, 에러 핸들링 강화
+
+### 두 가지 기술 스택 동시 구현
+- **위험**: Python과 SpringBoot 모두 구현하면서 일관성 유지 어려움
+- **완화**: 공통 기능 명세서 작성, 각 구현체별 명확한 역할 분담
+
+## MVP 정의 및 확장성
+
+### 최소 기능 집합
+- **MVP**: 날씨 조회 기능만 구현 (가장 기본적인 예제)
+- **확장**: 기온, 미세먼지 기능은 MVP 이후 단계적으로 추가
+- **기준**: 각 기능이 독립적으로 동작하며, 조합 가능하도록 설계
+
+### 기능 범위 조절
+- **위험**: 기능을 너무 많이 추가하여 프로젝트가 복잡해짐
+- **완화**: 명확한 기능 목록 정의, 불필요한 기능 추가 금지, 각 Phase별 완료 기준 명확화
+
+## Resource Constraints
+
+### 개발 시간
+- **위험**: 두 가지 기술 스택 구현으로 인한 시간 소요
+- **완화**: Python 구현을 먼저 완성하고, SpringBoot는 패턴을 재사용하여 빠르게 구현
+
+### API Key 발급
+- **위험**: 공공데이터포털 API Key 발급이 지연될 수 있음
+- **완화**: Mock 데이터를 먼저 구현하고, API Key 발급 후 실제 연동으로 전환
+
+### 테스트 환경
+- **위험**: LLM 연결 테스트를 위한 Claude Desktop 등 추가 도구 필요
+- **완화**: 테스트 없이도 동작 확인 가능한 단위 테스트 우선 작성, LLM 연결은 선택사항으로 명시
+
+# Appendix  
+## Research Findings
+
+### MCP 프로토콜
+- Model Context Protocol은 Anthropic에서 개발한 프로토콜
+- LLM과 외부 도구/리소스를 연결하는 표준 방법
+- JSON-RPC 2.0 기반 통신
+
+### 공공데이터 API
+- 기상청 단기예보 API: 공공데이터포털에서 무료 제공
+- 환경부 대기질 API: 공공데이터포털에서 무료 제공
+- API Key 발급 필요 (회원가입 후 신청)
+
+### 기술 스택 선택 이유
+- **Python**: 초급 개발자에게 친숙하고, 빠른 프로토타이핑 가능
+- **SpringBoot**: 엔터프라이즈 환경에서 널리 사용되며, Java 개발자에게 유용
+
+## Technical Specifications
+
+### Python 구현 스펙
+- Python 3.9 이상
+- FastAPI 또는 Flask (비동기 지원 고려)
+- uvicorn (ASGI 서버)
+- pydantic (데이터 검증)
+
+### SpringBoot 구현 스펙
+- Java 17 이상
+- Spring Boot 3.x
+- Spring WebFlux (비동기 지원)
+- Jackson (JSON 처리)
+
+### MCP 프로토콜 스펙
+- JSON-RPC 2.0
+- HTTP 또는 stdio 전송 방식
+- Tools, Resources, Prompts 지원
+
+### 매뉴얼 형식
+- Markdown (.md)
+- 코드 블록 포함
+- 스크린샷 및 다이어그램 (가능한 경우)
+- 단계별 가이드 형식
+</PRD>

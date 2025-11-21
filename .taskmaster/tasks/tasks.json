@@ -1,0 +1,495 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Python 프로젝트 기본 구조 설정",
+        "description": "Python MCP 서버의 기본 프로젝트 구조를 생성하고 의존성을 설정합니다.",
+        "details": "1. python/ 디렉토리 생성\n2. FastAPI 기반 프로젝트 구조 생성:\n   - src/main.py (엔트리포인트)\n   - src/mcp_handler.py (MCP 프로토콜 핸들러)\n   - src/config.py (환경설정)\n3. requirements.txt 작성:\n   - fastapi>=0.100.0\n   - uvicorn[standard]>=0.22.0\n   - httpx>=0.24.0\n   - pydantic>=2.0.0\n   - python-dotenv>=1.0.0\n4. .env.example 파일 작성 (API_KEY 등)\n5. MCP 프로토콜 기본 구조 구현:\n   - JSON-RPC 2.0 핸들러\n   - Tools 등록 메커니즘\n   - initialize/tools/list 메서드 구현",
+        "testStrategy": "1. uvicorn으로 서버 실행 확인\n2. /health 엔드포인트 테스트\n3. MCP initialize 요청 테스트 (curl 또는 httpie)\n4. tools/list 요청으로 빈 도구 목록 반환 확인",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Python 프로젝트 디렉토리 구조 및 의존성 설정",
+            "description": "python/ 디렉토리와 src/ 하위 구조를 생성하고 requirements.txt 및 .env.example 파일을 작성합니다.",
+            "dependencies": [],
+            "details": "1. python/ 루트 디렉토리 생성\n2. python/src/ 디렉토리 구조 생성 (services/, tools/ 포함)\n3. requirements.txt 작성:\n   - fastapi>=0.100.0\n   - uvicorn[standard]>=0.22.0\n   - httpx>=0.24.0\n   - pydantic>=2.0.0\n   - python-dotenv>=1.0.0\n4. python/.env.example 파일 작성 (KMA_API_KEY, AIRKOREA_API_KEY 등 환경변수 템플릿)\n5. python/src/__init__.py 및 하위 패키지 __init__.py 파일 생성",
+            "status": "pending",
+            "testStrategy": "디렉토리 구조가 올바르게 생성되었는지 확인하고, pip install -r requirements.txt로 의존성 설치 테스트"
+          },
+          {
+            "id": 2,
+            "title": "FastAPI 기반 서버 엔트리포인트 및 설정 구현",
+            "description": "FastAPI 애플리케이션 엔트리포인트(main.py)와 환경설정(config.py)을 구현합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. python/src/config.py 구현:\n   - pydantic BaseSettings를 사용한 환경설정 클래스\n   - API_KEY, PORT, DEBUG 등 설정 관리\n   - .env 파일 로딩\n2. python/src/main.py 구현:\n   - FastAPI 앱 인스턴스 생성\n   - /health 엔드포인트 구현\n   - MCP 프로토콜 라우터 연결\n   - uvicorn 서버 실행 코드\n3. CORS 설정 및 기본 미들웨어 구성",
+            "status": "pending",
+            "testStrategy": "1. uvicorn src.main:app --reload로 서버 실행 확인\n2. curl http://localhost:8000/health로 헬스체크 응답 확인\n3. 환경변수 로딩 테스트"
+          },
+          {
+            "id": 3,
+            "title": "MCP 프로토콜 핸들러 및 JSON-RPC 2.0 구현",
+            "description": "MCP 프로토콜을 처리하는 핸들러와 JSON-RPC 2.0 기반 메서드(initialize, tools/list)를 구현합니다.",
+            "dependencies": [
+              2
+            ],
+            "details": "1. python/src/mcp_handler.py 구현:\n   - JSON-RPC 2.0 요청/응답 모델 정의 (Pydantic)\n   - MCP 프로토콜 엔드포인트 (/mcp)\n   - initialize 메서드: 서버 정보 및 capabilities 반환\n   - tools/list 메서드: 등록된 도구 목록 반환 (빈 목록)\n2. Tools 등록 메커니즘 구현:\n   - 데코레이터 기반 도구 등록 시스템\n   - 도구 메타데이터 (name, description, parameters) 관리\n3. 에러 핸들링:\n   - JSON-RPC 에러 코드 정의\n   - 메서드 not found, 파라미터 오류 처리",
+            "status": "pending",
+            "testStrategy": "1. curl로 MCP initialize 요청 테스트:\n   curl -X POST http://localhost:8000/mcp -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"method\":\"initialize\",\"id\":1}'\n2. tools/list 요청으로 빈 도구 목록 반환 확인\n3. 잘못된 메서드 호출 시 적절한 에러 응답 확인"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "SpringBoot 프로젝트 기본 구조 설정",
+        "description": "SpringBoot MCP 서버의 기본 프로젝트 구조를 생성하고 의존성을 설정합니다.",
+        "details": "1. springboot/ 디렉토리 생성\n2. Spring Initializr 기반 프로젝트 구조:\n   - build.gradle (Gradle 사용)\n   - src/main/java/com/mcp/server/McpServerApplication.java\n   - src/main/java/com/mcp/server/controller/McpController.java\n   - src/main/java/com/mcp/server/handler/McpHandler.java\n   - src/main/java/com/mcp/server/config/AppConfig.java\n3. build.gradle 의존성:\n   - spring-boot-starter-web\n   - spring-boot-starter-webflux\n   - lombok\n   - jackson-databind\n4. application.yml 설정 (포트 8080, API Key 등)\n5. MCP 프로토콜 기본 구조 구현:\n   - JSON-RPC 2.0 핸들러\n   - Tools 등록 어노테이션 기반 메커니즘",
+        "testStrategy": "1. ./gradlew bootRun으로 서버 실행 확인\n2. /actuator/health 엔드포인트 테스트\n3. MCP initialize 요청 테스트\n4. tools/list 요청으로 빈 도구 목록 반환 확인",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "SpringBoot 프로젝트 디렉토리 및 Gradle 빌드 설정 생성",
+            "description": "springboot/ 디렉토리를 생성하고 build.gradle과 기본 Gradle 래퍼 설정을 구성합니다.",
+            "dependencies": [],
+            "details": "1. springboot/ 디렉토리 생성\n2. build.gradle 작성 - Spring Boot 3.x, Java 17+:\n   - spring-boot-starter-web\n   - spring-boot-starter-webflux\n   - lombok\n   - jackson-databind\n   - spring-boot-starter-actuator\n3. settings.gradle 작성 (프로젝트명: mcp-server)\n4. gradle/wrapper 디렉토리 및 Gradle Wrapper 파일 생성\n5. gradlew, gradlew.bat 스크립트 생성\n6. src/main/resources/application.yml 작성 (포트 8080, API Key 설정)",
+            "status": "pending",
+            "testStrategy": "./gradlew build 명령으로 빌드 성공 확인, Gradle 프로젝트 구조 검증"
+          },
+          {
+            "id": 2,
+            "title": "SpringBoot 애플리케이션 메인 클래스 및 기본 패키지 구조 생성",
+            "description": "Spring Boot 애플리케이션의 메인 클래스와 기본 패키지 구조를 생성합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. 패키지 구조 생성:\n   - src/main/java/com/mcp/server/\n2. McpServerApplication.java 생성:\n   - @SpringBootApplication 어노테이션\n   - main 메서드\n3. config/AppConfig.java 생성:\n   - @Configuration 클래스\n   - WebClient Bean 정의\n   - API Key 설정 로드\n4. .env.example 파일 작성 (WEATHER_API_KEY, AIR_QUALITY_API_KEY 등)\n5. Lombok 설정을 위한 lombok.config 파일 생성",
+            "status": "pending",
+            "testStrategy": "./gradlew bootRun으로 서버 실행 확인, /actuator/health 엔드포인트 응답 테스트"
+          },
+          {
+            "id": 3,
+            "title": "MCP 프로토콜 핸들러 및 컨트롤러 기본 구조 구현",
+            "description": "JSON-RPC 2.0 기반 MCP 프로토콜 핸들러와 컨트롤러를 구현합니다.",
+            "dependencies": [
+              2
+            ],
+            "details": "1. controller/McpController.java 생성:\n   - @RestController\n   - POST /mcp 엔드포인트\n   - JSON-RPC 요청 수신 및 응답\n2. handler/McpHandler.java 생성:\n   - JSON-RPC 2.0 메시지 파싱\n   - initialize 메서드 구현\n   - tools/list 메서드 구현 (빈 도구 목록 반환)\n3. dto/JsonRpcRequest.java, JsonRpcResponse.java 생성\n4. @McpTool 커스텀 어노테이션 정의 (tools/ 패키지용)\n5. MCP 도구 등록 메커니즘 기본 구현:\n   - ToolRegistry 클래스 생성\n   - 어노테이션 기반 자동 등록 지원",
+            "status": "pending",
+            "testStrategy": "1. MCP initialize 요청 테스트 (curl로 JSON-RPC 요청 전송)\n2. tools/list 요청으로 빈 도구 목록 반환 확인\n3. 잘못된 메서드 호출 시 에러 응답 확인"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Python 날씨 조회 MCP Tool 구현",
+        "description": "Python에서 기상청 API를 연동하여 날씨 조회 MCP Tool을 구현합니다.",
+        "details": "1. 기상청 단기예보 API 연동:\n   - src/services/weather_service.py 생성\n   - API Key 환경변수로 관리\n   - httpx를 사용한 비동기 API 호출\n2. 날씨 데이터 모델 정의 (pydantic):\n   - WeatherInfo: location, temperature, humidity, description, timestamp\n3. MCP Tool 구현:\n   - src/tools/weather_tool.py\n   - 함수명: get_weather\n   - 파라미터: location (지역명)\n4. 에러 처리:\n   - API 호출 실패 시 적절한 에러 메시지\n   - 지원하지 않는 지역 처리\n5. Mock 데이터 지원:\n   - API Key 없을 때 Mock 응답 반환\n\n```python\nasync def get_weather(location: str) -> WeatherInfo:\n    # 기상청 API 호출\n    # 데이터 파싱 및 반환\n```",
+        "testStrategy": "1. Mock 데이터로 단위 테스트\n2. 실제 API 연동 통합 테스트\n3. 다양한 지역명 입력 테스트 (서울, 부산, 제주 등)\n4. 에러 케이스 테스트 (잘못된 지역명, API 장애)",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "날씨 데이터 모델 및 서비스 구현",
+            "description": "Pydantic을 사용한 WeatherInfo 모델 정의 및 기상청 API 연동 서비스를 구현합니다.",
+            "dependencies": [],
+            "details": "1. src/models/weather.py 생성하여 WeatherInfo Pydantic 모델 정의 (location, temperature, humidity, description, timestamp 필드 포함)\n2. src/services/weather_service.py 생성\n3. httpx를 사용한 비동기 API 클라이언트 구현\n4. 기상청 단기예보 API 호출 및 응답 파싱 로직\n5. API Key는 환경변수(WEATHER_API_KEY)로 관리\n6. 지역명-격자좌표 매핑 테이블 구현 (서울, 부산, 제주 등 주요 도시)\n7. Mock 데이터 지원: API Key 없을 때 샘플 날씨 데이터 반환",
+            "status": "pending",
+            "testStrategy": "1. WeatherInfo 모델 직렬화/역직렬화 테스트\n2. Mock 모드에서 서비스 호출 테스트\n3. 지역명 매핑 테이블 정확성 검증"
+          },
+          {
+            "id": 2,
+            "title": "MCP Tool 함수 구현",
+            "description": "get_weather MCP Tool 함수를 구현하여 날씨 조회 기능을 MCP 프로토콜에 등록합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. src/tools/weather_tool.py 생성\n2. get_weather 비동기 함수 구현 (location: str 파라미터)\n3. WeatherService를 호출하여 날씨 데이터 조회\n4. MCP Tool 메타데이터 정의 (name, description, parameters schema)\n5. Tool을 MCP 서버의 tools 레지스트리에 등록\n6. 응답 포맷을 MCP 프로토콜에 맞게 변환",
+            "status": "pending",
+            "testStrategy": "1. get_weather 함수 직접 호출 테스트\n2. 다양한 지역명 입력 테스트 (서울, 부산, 제주 등)\n3. MCP tools/list에서 weather tool 노출 확인"
+          },
+          {
+            "id": 3,
+            "title": "에러 처리 및 통합 테스트",
+            "description": "API 호출 실패, 잘못된 지역명 등 에러 케이스 처리 및 전체 통합 테스트를 수행합니다.",
+            "dependencies": [
+              2
+            ],
+            "details": "1. 커스텀 예외 클래스 정의 (WeatherAPIError, UnsupportedLocationError)\n2. API 호출 실패 시 재시도 로직 및 타임아웃 설정\n3. 지원하지 않는 지역명 입력 시 명확한 에러 메시지 반환\n4. 네트워크 오류, 인증 오류 등 구체적인 에러 타입별 처리\n5. 로깅 추가로 디버깅 용이성 확보\n6. pytest를 사용한 단위 테스트 및 통합 테스트 작성\n7. CI 환경에서의 Mock 테스트 구성",
+            "status": "pending",
+            "testStrategy": "1. 에러 케이스 테스트 (잘못된 지역명, API 장애, 타임아웃)\n2. 실제 API 연동 통합 테스트 (API Key 있는 환경)\n3. Mock 데이터 모드 전환 테스트\n4. 전체 MCP 호출 플로우 E2E 테스트"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "SpringBoot 날씨 조회 MCP Tool 구현",
+        "description": "SpringBoot에서 기상청 API를 연동하여 날씨 조회 MCP Tool을 구현합니다.",
+        "details": "1. 기상청 단기예보 API 연동:\n   - service/WeatherService.java 생성\n   - WebClient를 사용한 비동기 API 호출\n2. 날씨 데이터 모델 정의:\n   - dto/WeatherInfo.java (record 또는 POJO)\n3. MCP Tool 구현:\n   - tools/WeatherTool.java\n   - @McpTool 어노테이션 (커스텀 정의)\n4. 에러 처리:\n   - @ExceptionHandler로 일관된 에러 응답\n   - API 호출 실패 시 폴백 로직\n5. Mock 데이터 지원:\n   - Profile 기반 Mock/Real 전환\n\n```java\n@McpTool(name = \"get_weather\")\npublic Mono<WeatherInfo> getWeather(String location) {\n    // 기상청 API 호출\n}\n```",
+        "testStrategy": "1. @SpringBootTest로 통합 테스트\n2. MockWebServer로 API 모킹\n3. 다양한 지역명 입력 테스트\n4. 에러 케이스 테스트",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "WeatherService 및 WebClient 설정 구현",
+            "description": "기상청 단기예보 API 연동을 위한 WeatherService와 WebClient 설정을 구현합니다.",
+            "dependencies": [],
+            "details": "1. config/WebClientConfig.java 생성하여 WebClient Bean 설정\n2. service/WeatherService.java 생성\n3. WebClient를 사용한 비동기 API 호출 구현\n4. application.yml에 기상청 API URL 및 인증키 설정 추가\n5. Profile 기반 Mock/Real 전환을 위한 @Profile 어노테이션 적용\n6. Mock 구현체 WeatherServiceMock.java 생성\n7. 기상청 API 응답을 파싱하는 로직 구현\n8. API 호출 실패 시 폴백 로직 구현 (Mono.onErrorResume)",
+            "status": "pending",
+            "testStrategy": "MockWebServer를 사용한 API 모킹 테스트, 다양한 지역명 입력 테스트, 타임아웃 및 에러 케이스 테스트"
+          },
+          {
+            "id": 2,
+            "title": "WeatherInfo DTO 및 에러 처리 구현",
+            "description": "날씨 데이터 모델을 정의하고 일관된 에러 처리를 구현합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. dto/WeatherInfo.java 생성 (Java Record 사용)\n   - 온도, 습도, 강수확률, 하늘상태, 풍속 등 필드 정의\n2. dto/WeatherApiResponse.java 생성 (기상청 API 원본 응답 매핑)\n3. exception/WeatherApiException.java 커스텀 예외 생성\n4. exception/GlobalExceptionHandler.java에 @ExceptionHandler 추가\n5. 일관된 에러 응답 형식 정의 (ErrorResponse DTO)\n6. API 응답 코드별 예외 처리 로직 구현",
+            "status": "pending",
+            "testStrategy": "DTO 직렬화/역직렬화 테스트, 예외 핸들러 단위 테스트, 다양한 에러 시나리오 테스트"
+          },
+          {
+            "id": 3,
+            "title": "WeatherTool MCP Tool 구현",
+            "description": "MCP 프로토콜에 맞는 날씨 조회 Tool을 구현합니다.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "1. tools/WeatherTool.java 생성\n2. @McpTool 커스텀 어노테이션 정의 (annotation/McpTool.java)\n3. getWeather(String location) 메서드 구현\n   - location 파라미터 검증\n   - WeatherService 호출\n   - Mono<WeatherInfo> 반환\n4. MCP 도구 스키마 정의 (name, description, inputSchema)\n5. McpHandler에 WeatherTool 등록\n6. tools/list 응답에 get_weather 도구 포함되도록 구현\n7. tools/call 요청 처리 로직 구현",
+            "status": "pending",
+            "testStrategy": "@SpringBootTest로 통합 테스트, MCP tools/list 및 tools/call 요청 테스트, 다양한 지역명 입력 테스트, 에러 응답 형식 검증"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Python 기온 조회 MCP Tool 구현",
+        "description": "Python에서 날씨 API 데이터를 활용하여 기온 조회 MCP Tool을 구현합니다.",
+        "details": "1. 기온 데이터 추출 및 파싱:\n   - 날씨 서비스 재사용 또는 확장\n   - 현재 기온, 체감온도 계산\n2. 기온 데이터 모델:\n   - TemperatureInfo: location, temperature, feels_like, min_temp, max_temp, timestamp\n3. 체감온도 계산 로직:\n   - 풍속, 습도를 고려한 체감온도 공식 적용\n4. MCP Tool 구현:\n   - src/tools/temperature_tool.py\n   - 함수명: get_temperature\n\n```python\ndef calculate_feels_like(temp: float, wind: float, humidity: float) -> float:\n    # 체감온도 계산 공식\n    pass\n```",
+        "testStrategy": "1. 체감온도 계산 로직 단위 테스트\n2. 다양한 기온 범위 테스트\n3. 날씨 조회와의 데이터 일관성 확인",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "TemperatureInfo 데이터 모델 및 체감온도 계산 함수 구현",
+            "description": "기온 데이터를 담을 Pydantic 모델과 풍속, 습도를 고려한 체감온도 계산 로직을 구현합니다.",
+            "dependencies": [],
+            "details": "1. src/models/temperature.py 생성\n2. TemperatureInfo Pydantic 모델 정의:\n   - location: str (지역명)\n   - temperature: float (현재 기온)\n   - feels_like: float (체감온도)\n   - min_temp: float (최저 기온)\n   - max_temp: float (최고 기온)\n   - timestamp: datetime (측정 시간)\n3. calculate_feels_like() 함수 구현:\n   - 풍속(m/s)과 습도(%)를 고려한 체감온도 공식 적용\n   - 겨울철: Wind Chill Index (기온 < 10°C, 풍속 > 4.8km/h)\n   - 여름철: Heat Index (기온 > 26°C, 습도 > 40%)\n   - 그 외: 실제 기온 반환",
+            "status": "pending",
+            "testStrategy": "1. 체감온도 계산 단위 테스트 (다양한 기온/풍속/습도 조합)\n2. 경계값 테스트 (0°C, 10°C, 26°C 등)\n3. TemperatureInfo 모델 유효성 검사 테스트"
+          },
+          {
+            "id": 2,
+            "title": "날씨 서비스 확장하여 기온 데이터 추출 기능 추가",
+            "description": "기존 weather_service를 확장하거나 temperature_service를 생성하여 API로부터 기온 관련 데이터를 추출합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. src/services/temperature_service.py 생성 또는 weather_service 확장\n2. 날씨 API 응답에서 기온 데이터 파싱:\n   - 현재 기온 (temperature)\n   - 최저/최고 기온 (min_temp, max_temp)\n   - 풍속 (wind_speed)\n   - 습도 (humidity)\n3. get_temperature_info() 비동기 함수 구현:\n   - weather_service의 API 호출 재사용\n   - 체감온도 계산 함수 호출\n   - TemperatureInfo 객체 반환\n4. Mock 데이터 지원 (API Key 없을 때)",
+            "status": "pending",
+            "testStrategy": "1. Mock API 응답으로 데이터 파싱 테스트\n2. 날씨 서비스와의 데이터 일관성 확인\n3. 다양한 지역 데이터 테스트"
+          },
+          {
+            "id": 3,
+            "title": "get_temperature MCP Tool 구현 및 등록",
+            "description": "MCP 프로토콜에서 호출 가능한 기온 조회 Tool을 구현하고 서버에 등록합니다.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "1. src/tools/temperature_tool.py 생성\n2. get_temperature 함수 구현:\n   - 파라미터: location (str, 지역명)\n   - 반환: TemperatureInfo를 JSON 형식으로 변환\n3. MCP Tool 스키마 정의:\n   - name: 'get_temperature'\n   - description: '특정 지역의 기온 정보를 조회합니다'\n   - parameters: {location: {type: 'string', description: '지역명'}}\n4. MCP 핸들러에 Tool 등록\n5. 에러 처리: 잘못된 지역명, API 실패 등",
+            "status": "pending",
+            "testStrategy": "1. MCP Tool 호출 통합 테스트\n2. 다양한 지역명 테스트 (서울, 부산, 제주 등)\n3. 에러 케이스 테스트 (잘못된 지역명)\n4. tools/list에서 get_temperature 등록 확인"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "SpringBoot 기온 조회 MCP Tool 구현",
+        "description": "SpringBoot에서 날씨 API 데이터를 활용하여 기온 조회 MCP Tool을 구현합니다.",
+        "details": "1. 기온 데이터 추출 및 파싱:\n   - WeatherService 확장\n2. 기온 데이터 모델:\n   - dto/TemperatureInfo.java\n3. 체감온도 계산 로직:\n   - utils/TemperatureCalculator.java\n4. MCP Tool 구현:\n   - tools/TemperatureTool.java\n\n```java\n@McpTool(name = \"get_temperature\")\npublic Mono<TemperatureInfo> getTemperature(String location) {\n    // 기온 데이터 반환\n}\n```",
+        "testStrategy": "1. 체감온도 계산 단위 테스트\n2. 통합 테스트\n3. 날씨 조회와의 데이터 일관성 확인",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "TemperatureInfo DTO 및 TemperatureCalculator 유틸리티 구현",
+            "description": "기온 데이터를 담을 DTO 클래스와 체감온도 계산 유틸리티를 구현합니다.",
+            "dependencies": [],
+            "details": "1. dto/TemperatureInfo.java 생성:\n   - 현재기온, 최저기온, 최고기온, 체감온도 필드 정의\n   - Java record 또는 Lombok @Data 사용\n   - 단위(섭씨/화씨) 필드 포함\n\n2. utils/TemperatureCalculator.java 생성:\n   - 체감온도 계산 공식 구현 (Wind Chill, Heat Index)\n   - 풍속과 습도를 고려한 체감온도 계산\n   - 온도 단위 변환 메서드 (섭씨 <-> 화씨)\n\n```java\npublic record TemperatureInfo(\n    double currentTemp,\n    double minTemp,\n    double maxTemp,\n    double feelsLike,\n    String unit,\n    String location,\n    LocalDateTime measuredAt\n) {}\n```",
+            "status": "pending",
+            "testStrategy": "1. TemperatureCalculator 단위 테스트:\n   - 다양한 기온/풍속/습도 조합 테스트\n   - 경계값 테스트 (극저온, 극고온)\n   - 온도 변환 정확도 검증\n2. TemperatureInfo 직렬화/역직렬화 테스트"
+          },
+          {
+            "id": 2,
+            "title": "WeatherService 확장 - 기온 데이터 추출 및 파싱",
+            "description": "기존 WeatherService를 확장하여 기온 데이터를 추출하고 파싱하는 기능을 구현합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. WeatherService에 기온 전용 메서드 추가:\n   - getTemperatureData(String location) 메서드 구현\n   - 기상청 API 응답에서 기온 관련 필드 추출\n   - T1H(기온), TMN(최저기온), TMX(최고기온) 파싱\n\n2. 체감온도 계산 통합:\n   - TemperatureCalculator 주입\n   - 풍속(WSD), 습도(REH) 데이터와 결합\n   - TemperatureInfo 객체 생성 및 반환\n\n3. 캐싱 고려:\n   - 동일 지역 요청 시 캐시 활용\n   - @Cacheable 적용 검토\n\n```java\npublic Mono<TemperatureInfo> getTemperatureData(String location) {\n    return getWeatherData(location)\n        .map(this::extractTemperatureInfo);\n}\n```",
+            "status": "pending",
+            "testStrategy": "1. MockWebServer로 기상청 API 응답 모킹\n2. 다양한 지역 코드 입력 테스트\n3. API 응답 파싱 정확도 검증\n4. 체감온도 계산 통합 테스트\n5. 에러 케이스 (API 실패, 잘못된 응답) 테스트"
+          },
+          {
+            "id": 3,
+            "title": "TemperatureTool MCP Tool 구현",
+            "description": "MCP 프로토콜에 맞는 기온 조회 Tool을 구현하고 등록합니다.",
+            "dependencies": [
+              2
+            ],
+            "details": "1. tools/TemperatureTool.java 생성:\n   - @McpTool(name = \"get_temperature\") 어노테이션 적용\n   - WeatherService 의존성 주입\n   - location 파라미터 검증 및 처리\n\n2. MCP Tool 등록:\n   - Tool 메타데이터 정의 (name, description, inputSchema)\n   - MCP Handler에 Tool 등록\n\n3. 에러 처리:\n   - 유효하지 않은 지역명 처리\n   - API 호출 실패 시 적절한 에러 응답\n   - timeout 처리\n\n```java\n@Component\npublic class TemperatureTool {\n    @McpTool(name = \"get_temperature\", description = \"특정 지역의 현재 기온과 체감온도를 조회합니다\")\n    public Mono<TemperatureInfo> getTemperature(\n        @McpParam(name = \"location\", description = \"조회할 지역명\") String location\n    ) {\n        return weatherService.getTemperatureData(location);\n    }\n}\n```",
+            "status": "pending",
+            "testStrategy": "1. @SpringBootTest 통합 테스트\n2. MCP tools/list에서 get_temperature Tool 확인\n3. MCP tools/call로 실제 기온 조회 테스트\n4. 날씨 조회(get_weather)와 데이터 일관성 확인\n5. 다양한 입력값 테스트 (한글/영문 지역명)\n6. 에러 응답 형식 검증"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Python 미세먼지 조회 MCP Tool 구현",
+        "description": "Python에서 환경부 대기질 API를 연동하여 미세먼지 조회 MCP Tool을 구현합니다.",
+        "details": "1. 환경부 대기질 API 연동:\n   - src/services/air_quality_service.py 생성\n   - 별도 API Key 관리\n2. 미세먼지 데이터 모델:\n   - AirQualityInfo: location, pm10, pm25, grade, timestamp\n3. 등급 판정 로직:\n   - PM10: 0-30(좋음), 31-80(보통), 81-150(나쁨), 151+(매우나쁨)\n   - PM2.5: 0-15(좋음), 16-35(보통), 36-75(나쁨), 76+(매우나쁨)\n4. MCP Tool 구현:\n   - src/tools/air_quality_tool.py\n   - 함수명: get_air_quality\n\n```python\ndef get_air_quality_grade(pm10: int, pm25: int) -> str:\n    # 등급 판정 로직\n    pass\n```",
+        "testStrategy": "1. 등급 판정 로직 단위 테스트 (경계값 테스트)\n2. API 연동 통합 테스트\n3. Mock 데이터 테스트",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "AirQualityInfo 데이터 모델 및 등급 판정 함수 구현",
+            "description": "미세먼지 데이터를 담을 Pydantic 모델과 PM10/PM2.5 기준 등급 판정 로직을 구현합니다.",
+            "dependencies": [],
+            "details": "1. src/models/air_quality.py 생성\n2. AirQualityInfo Pydantic 모델 정의:\n   - location: str (지역명)\n   - pm10: int (PM10 농도)\n   - pm25: int (PM2.5 농도)\n   - pm10_grade: str (PM10 등급)\n   - pm25_grade: str (PM2.5 등급)\n   - overall_grade: str (통합 등급)\n   - timestamp: datetime (측정 시간)\n3. get_air_quality_grade() 함수 구현:\n   - PM10 등급 판정: 0-30(좋음), 31-80(보통), 81-150(나쁨), 151+(매우나쁨)\n   - PM2.5 등급 판정: 0-15(좋음), 16-35(보통), 36-75(나쁨), 76+(매우나쁨)\n   - 통합 등급: PM10과 PM2.5 중 더 나쁜 등급 반환\n4. 경계값 처리 및 음수/비정상값 처리 로직",
+            "status": "pending",
+            "testStrategy": "1. 등급 판정 로직 경계값 단위 테스트 (0, 30, 31, 80, 81, 150, 151 등)\n2. PM10/PM2.5 각각의 등급 테스트\n3. 통합 등급 계산 정확성 테스트\n4. AirQualityInfo 모델 유효성 검사 테스트"
+          },
+          {
+            "id": 2,
+            "title": "환경부 대기질 API 연동 서비스 구현",
+            "description": "환경부 대기질 API를 연동하여 미세먼지 데이터를 조회하는 서비스를 구현합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. src/services/air_quality_service.py 생성\n2. httpx를 사용한 비동기 API 클라이언트 구현\n3. 환경부 에어코리아 API 연동:\n   - 측정소별 실시간 측정정보 조회\n   - 시도별 실시간 측정정보 조회\n4. API Key 환경변수 관리 (AIRKOREA_API_KEY)\n5. API 응답 파싱 및 AirQualityInfo 변환 로직\n6. 지역명-측정소 매핑 테이블 구현\n7. Mock 데이터 지원: API Key 없을 때 샘플 데이터 반환\n8. 에러 처리: API 호출 실패, 타임아웃, 인증 오류 등\n9. 재시도 로직 및 캐싱 고려",
+            "status": "pending",
+            "testStrategy": "1. Mock API 응답으로 서비스 호출 테스트\n2. 지역명 매핑 정확성 검증\n3. API 응답 파싱 테스트\n4. Mock 모드 전환 테스트\n5. 에러 케이스 테스트 (타임아웃, 인증 실패)"
+          },
+          {
+            "id": 3,
+            "title": "get_air_quality MCP Tool 구현 및 등록",
+            "description": "MCP 프로토콜에서 호출 가능한 미세먼지 조회 Tool을 구현하고 서버에 등록합니다.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "1. src/tools/air_quality_tool.py 생성\n2. get_air_quality 비동기 함수 구현:\n   - 파라미터: location (str, 지역명)\n   - AirQualityService 호출\n   - AirQualityInfo를 JSON 형식으로 변환하여 반환\n3. MCP Tool 스키마 정의:\n   - name: 'get_air_quality'\n   - description: '특정 지역의 미세먼지 정보를 조회합니다'\n   - parameters: {location: {type: 'string', description: '지역명'}}\n4. MCP 핸들러에 Tool 등록 (기존 등록 메커니즘 활용)\n5. 에러 처리: 잘못된 지역명, API 실패, 데이터 없음 등\n6. 응답에 등급 해석 메시지 포함 (예: '외출 시 마스크 착용 권장')",
+            "status": "pending",
+            "testStrategy": "1. get_air_quality 함수 직접 호출 테스트\n2. 다양한 지역명 테스트 (서울, 부산, 대전 등)\n3. MCP tools/list에서 get_air_quality 등록 확인\n4. MCP tools/call로 실제 미세먼지 조회 테스트\n5. 에러 케이스 테스트 (잘못된 지역명, API 장애)\n6. 전체 MCP 호출 플로우 E2E 테스트"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "SpringBoot 미세먼지 조회 MCP Tool 구현",
+        "description": "SpringBoot에서 환경부 대기질 API를 연동하여 미세먼지 조회 MCP Tool을 구현합니다.",
+        "details": "1. 환경부 대기질 API 연동:\n   - service/AirQualityService.java 생성\n2. 미세먼지 데이터 모델:\n   - dto/AirQualityInfo.java\n3. 등급 판정 로직:\n   - utils/AirQualityGradeCalculator.java\n4. MCP Tool 구현:\n   - tools/AirQualityTool.java\n\n```java\n@McpTool(name = \"get_air_quality\")\npublic Mono<AirQualityInfo> getAirQuality(String location) {\n    // 미세먼지 정보 반환\n}\n```",
+        "testStrategy": "1. 등급 판정 로직 단위 테스트\n2. API 연동 통합 테스트\n3. Mock 데이터 테스트",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define AirQualityInfo DTO and Implement AirQualityService",
+            "description": "Create the `AirQualityInfo.java` Data Transfer Object to model the fine dust data and implement `AirQualityService.java` to handle asynchronous calls to the Environment Ministry Air Quality API.",
+            "dependencies": [],
+            "details": "Create `src/main/java/com/mcp/server/dto/AirQualityInfo.java` with fields like `location`, `pm10Value`, `pm25Value`, `pm10Grade`, `pm25Grade`, `overallGrade`. Implement `src/main/java/com/mcp/server/service/AirQualityService.java` with methods to fetch data from the external API using Spring WebClient, similar to `WeatherService.java` in Task 4, and map the raw API response to `AirQualityInfo`. Include necessary API key handling and error management.",
+            "status": "pending",
+            "testStrategy": "API 연동 통합 테스트 (Integration test for API integration)"
+          },
+          {
+            "id": 2,
+            "title": "Develop AirQualityGradeCalculator Utility",
+            "description": "Create `AirQualityGradeCalculator.java` to encapsulate the logic for judging the grade of fine dust (PM10 and PM2.5) based on specified thresholds.",
+            "dependencies": [],
+            "details": "Create `src/main/java/com/mcp/server/utils/AirQualityGradeCalculator.java`. Implement static methods or a bean method that takes fine dust concentration values (e.g., PM10, PM2.5) as input and returns a string or enum representing their respective grades (e.g., \"Good\", \"Normal\", \"Bad\"). Define grade thresholds as constants within the class or external configuration. Ensure the logic covers various ranges as per environmental standards.",
+            "status": "pending",
+            "testStrategy": "등급 판정 로직 단위 테스트 (Unit test for grade judgment logic)"
+          },
+          {
+            "id": 3,
+            "title": "Implement AirQualityTool MCP and Integrate Services",
+            "description": "Implement the `AirQualityTool.java` MCP tool, exposing the `get_air_quality` functionality by integrating the `AirQualityService` and `AirQualityGradeCalculator`.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create `src/main/java/com/mcp/server/tools/AirQualityTool.java`. Annotate the class and its method with `@McpTool(name = \"get_air_quality\")`. The `getAirQuality(String location)` method should orchestrate calls to `AirQualityService` to fetch raw data, utilize `AirQualityGradeCalculator` to determine the grades, and construct the final `Mono<AirQualityInfo>` response. Ensure dependency injection for required services. Follow the design pattern established by `WeatherTool.java` and `TemperatureTool.java`.",
+            "status": "pending",
+            "testStrategy": "통합 테스트 (Integrated test covering the entire tool logic path), Mock 데이터 테스트 (using mocked `AirQualityService` and `AirQualityGradeCalculator`)."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Claude Desktop 연동 가이드 및 통합 테스트",
+        "description": "Claude Desktop과 MCP 서버 연동 설정 가이드를 작성하고 통합 테스트를 수행합니다.",
+        "details": "1. Claude Desktop 설정 파일 작성:\n   - claude_desktop_config.json 예제\n   - Python 서버 등록 방법\n   - SpringBoot 서버 등록 방법\n2. 연동 테스트 시나리오 작성:\n   - 날씨 조회: \"서울 날씨 알려줘\"\n   - 기온 조회: \"부산 현재 기온은?\"\n   - 미세먼지: \"대전 미세먼지 농도는?\"\n3. E2E 테스트 수행:\n   - 각 기능별 정상 동작 확인\n   - 에러 케이스 확인\n4. 트러블슈팅 가이드:\n   - 포트 충돌 해결\n   - API Key 오류\n   - 네트워크 문제",
+        "testStrategy": "1. Claude Desktop에서 실제 쿼리 테스트\n2. 모든 3가지 기능 E2E 테스트\n3. 에러 메시지 사용자 친화성 확인\n4. 다양한 입력 형태 테스트",
+        "priority": "high",
+        "dependencies": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Claude Desktop 설정 파일 템플릿 및 가이드 작성",
+            "description": "Claude Desktop과 MCP 서버 연동을 위한 claude_desktop_config.json 예제 파일과 설정 가이드 문서를 작성합니다.",
+            "dependencies": [],
+            "details": "docs/claude-desktop-setup.md 파일을 생성하여 다음 내용을 포함: 1) Claude Desktop 설치 및 기본 설정, 2) claude_desktop_config.json 파일 위치 및 구조 설명, 3) Python MCP 서버 등록 설정 예제 (포트 8000, stdio 모드), 4) SpringBoot MCP 서버 등록 설정 예제 (포트 8080), 5) 다중 서버 동시 등록 방법, 6) examples/claude_desktop_config.json 예제 파일 생성",
+            "status": "pending",
+            "testStrategy": "1. 설정 파일 JSON 문법 검증 2. 실제 Claude Desktop에서 설정 파일 로드 확인 3. 문서 마크다운 렌더링 확인"
+          },
+          {
+            "id": 2,
+            "title": "연동 테스트 시나리오 문서 및 테스트 스크립트 작성",
+            "description": "날씨, 기온, 미세먼지 조회 기능에 대한 E2E 테스트 시나리오와 자동화 테스트 스크립트를 작성합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "docs/integration-test-scenarios.md 파일을 생성하여 다음 테스트 케이스 정의: 1) 정상 케이스 - 서울/부산/대전 날씨 조회, 기온 조회, 미세먼지 조회, 2) 에러 케이스 - 잘못된 지역명, API 키 오류, 네트워크 타임아웃, 3) 엣지 케이스 - 특수문자 입력, 빈 입력, 긴 문자열. tests/ 디렉토리에 Python(pytest) 및 Java(JUnit) 테스트 스크립트 작성",
+            "status": "pending",
+            "testStrategy": "1. 테스트 시나리오 완전성 검토 2. 테스트 스크립트 실행 가능성 확인 3. 각 테스트 케이스 독립성 검증"
+          },
+          {
+            "id": 3,
+            "title": "E2E 테스트 수행 및 결과 문서화",
+            "description": "작성된 테스트 시나리오를 실행하여 Python과 SpringBoot 서버의 모든 기능을 검증하고 결과를 문서화합니다.",
+            "dependencies": [
+              2
+            ],
+            "details": "1) Python MCP 서버 기동 후 모든 테스트 시나리오 실행, 2) SpringBoot MCP 서버 기동 후 모든 테스트 시나리오 실행, 3) Claude Desktop에서 실제 자연어 쿼리 테스트 수행, 4) 테스트 결과를 docs/test-results.md에 기록 (성공/실패, 응답 시간, 에러 메시지), 5) 발견된 버그 및 개선사항 목록 작성",
+            "status": "pending",
+            "testStrategy": "1. 테스트 커버리지 100% 달성 확인 2. 모든 정상/에러 케이스 통과 확인 3. 응답 시간 기준치 충족 확인 (5초 이내)"
+          },
+          {
+            "id": 4,
+            "title": "트러블슈팅 가이드 작성",
+            "description": "Claude Desktop과 MCP 서버 연동 시 발생할 수 있는 일반적인 문제와 해결 방법을 정리한 가이드를 작성합니다.",
+            "dependencies": [
+              3
+            ],
+            "details": "docs/troubleshooting.md 파일을 생성하여 다음 문제 해결 방법 포함: 1) 포트 충돌 - 사용 중인 포트 확인 및 변경 방법, 2) API Key 오류 - 환경변수 설정 확인, 키 갱신 방법, 3) 네트워크 문제 - 방화벽 설정, 프록시 설정, 4) 서버 시작 실패 - 로그 확인 방법, 의존성 문제 해결, 5) Claude Desktop 연결 실패 - 설정 파일 검증, 서버 상태 확인, 6) 각 문제별 증상, 원인, 해결 단계를 명확히 기술",
+            "status": "pending",
+            "testStrategy": "1. 의도적으로 각 에러 상황 재현 후 가이드 유효성 검증 2. 초급 개발자 관점에서 이해 용이성 확인 3. 모든 해결 단계의 명령어 실행 가능성 확인"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "종합 매뉴얼 및 README 작성",
+        "description": "초급 개발자를 위한 상세한 설정, 실행, 테스트 매뉴얼과 프로젝트 README를 작성합니다.",
+        "details": "1. README.md 작성:\n   - 프로젝트 개요\n   - 빠른 시작 가이드\n   - 기술 스택 설명\n   - 기여 가이드\n2. Python 매뉴얼 (docs/python-guide.md):\n   - 환경 설정 (Python 설치, 가상환경)\n   - 의존성 설치\n   - 환경 변수 설정\n   - 서버 실행\n   - 각 기능 설명 및 테스트\n3. SpringBoot 매뉴얼 (docs/springboot-guide.md):\n   - Java/Gradle 설치\n   - 프로젝트 빌드\n   - 환경 변수 설정\n   - 서버 실행\n   - 각 기능 설명 및 테스트\n4. MCP 프로토콜 개념 설명 (docs/mcp-overview.md):\n   - JSON-RPC 2.0\n   - Tools, Resources, Prompts\n   - 다이어그램 포함\n5. API Key 발급 가이드 (docs/api-key-guide.md):\n   - 공공데이터포털 가입\n   - 기상청 API 신청\n   - 환경부 API 신청",
+        "testStrategy": "1. 매뉴얼 따라 처음부터 설정 테스트 (신규 환경)\n2. 각 단계별 스크린샷 정확성 확인\n3. 초급 개발자 리뷰 (가능한 경우)\n4. 링크 및 코드 블록 정확성 검증",
+        "priority": "high",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "README.md 작성 - 프로젝트 개요 및 빠른 시작 가이드",
+            "description": "프로젝트 루트에 README.md 파일을 작성하여 프로젝트 개요, 기술 스택, 빠른 시작 가이드, 기여 가이드를 포함합니다.",
+            "dependencies": [],
+            "details": "1. 프로젝트 개요 섹션: MCP 서버의 목적과 기능 설명\n2. 기술 스택 섹션: Python(FastAPI), SpringBoot, MCP 프로토콜 설명\n3. 빠른 시작 가이드: 환경 설정, 서버 실행, API 키 설정 요약\n4. 기여 가이드: PR 규칙, 코드 스타일, 이슈 보고 방법\n5. 각 상세 가이드 문서 링크 포함\n6. 뱃지 추가 (빌드 상태, 라이선스 등)",
+            "status": "pending",
+            "testStrategy": "마크다운 렌더링 확인, 모든 링크 유효성 검증, 초급 개발자가 README만으로 프로젝트 이해 가능 여부 확인"
+          },
+          {
+            "id": 2,
+            "title": "Python 환경 설정 및 실행 가이드 작성 (docs/python-guide.md)",
+            "description": "Python MCP 서버의 상세한 환경 설정, 의존성 설치, 환경 변수 설정, 서버 실행 및 테스트 방법을 문서화합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Python 설치 가이드 (3.9+ 버전)\n2. 가상환경 생성 및 활성화 (venv)\n3. requirements.txt 의존성 설치\n4. .env 파일 설정 (기상청 API Key, 환경부 API Key)\n5. uvicorn 서버 실행 명령어\n6. 각 MCP Tool 기능 설명 (날씨 조회, 기온 조회, 미세먼지)\n7. curl/httpie를 이용한 테스트 예제\n8. 일반적인 오류 해결 방법",
+            "status": "pending",
+            "testStrategy": "신규 환경에서 가이드 따라 처음부터 설정 테스트, 각 단계별 명령어 정확성 확인, 코드 블록 복사-붙여넣기 동작 확인"
+          },
+          {
+            "id": 3,
+            "title": "SpringBoot 환경 설정 및 실행 가이드 작성 (docs/springboot-guide.md)",
+            "description": "SpringBoot MCP 서버의 Java/Gradle 설치, 프로젝트 빌드, 환경 변수 설정, 서버 실행 및 테스트 방법을 문서화합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Java 17+ 설치 가이드 (JDK 설치)\n2. Gradle 설치 또는 gradlew 사용 방법\n3. 프로젝트 빌드 명령어 (./gradlew build)\n4. application.yml 환경 변수 설정\n5. 서버 실행 명령어 (./gradlew bootRun)\n6. 각 MCP Tool 기능 설명\n7. 테스트 실행 방법 (./gradlew test)\n8. IDE 설정 가이드 (IntelliJ, VS Code)",
+            "status": "pending",
+            "testStrategy": "신규 환경에서 가이드 따라 빌드 및 실행 테스트, Gradle 명령어 정확성 확인, application.yml 예제 동작 확인"
+          },
+          {
+            "id": 4,
+            "title": "MCP 프로토콜 개념 설명 문서 작성 (docs/mcp-overview.md)",
+            "description": "MCP 프로토콜의 핵심 개념인 JSON-RPC 2.0, Tools, Resources, Prompts를 다이어그램과 함께 설명합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. MCP (Model Context Protocol) 개요 설명\n2. JSON-RPC 2.0 프로토콜 구조 (request, response, error)\n3. Tools 개념 및 사용 예제\n4. Resources 개념 설명\n5. Prompts 개념 설명\n6. MCP 서버-클라이언트 통신 다이어그램 (Mermaid 또는 ASCII)\n7. initialize, tools/list 등 주요 메서드 설명\n8. 실제 요청/응답 JSON 예제",
+            "status": "pending",
+            "testStrategy": "다이어그램 렌더링 확인, JSON 예제 유효성 검증, MCP 프로토콜 이해도 향상 여부 리뷰"
+          },
+          {
+            "id": 5,
+            "title": "공공데이터포털 API Key 발급 가이드 작성 (docs/api-key-guide.md)",
+            "description": "공공데이터포털 가입, 기상청 단기예보 API 및 환경부 대기질 API 신청 절차를 스크린샷과 함께 상세히 안내합니다.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. 공공데이터포털 (data.go.kr) 회원가입 절차\n2. 기상청 단기예보 조회서비스 API 신청 방법\n3. 환경부 대기오염정보 조회 API 신청 방법\n4. API Key 발급 및 확인 방법\n5. API Key 환경 변수 설정 (.env 파일)\n6. API 호출 제한 및 주의사항\n7. API 테스트 방법 (직접 호출)\n8. 일반적인 API 오류 코드 및 해결 방법",
+            "status": "pending",
+            "testStrategy": "실제 API 신청 프로세스와 일치 여부 확인, 링크 유효성 검증, 초급 개발자가 가이드만으로 API Key 발급 가능 여부 테스트"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-11-21T09:00:59.790Z",
+      "updated": "2025-11-21T09:00:59.790Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
