@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+mcp:
+  api-key:
+    openweathermap: ${OPENWEATHERMAP_API_KEY:}

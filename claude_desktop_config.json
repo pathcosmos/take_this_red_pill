@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "weather-python": {
+      "command": "/Volumes/T72TB/show_must_go_on/take_this_red_pill/python/venv/bin/python",
+      "args": ["/Volumes/T72TB/show_must_go_on/take_this_red_pill/python/mcp_stdio_server.py"],
+      "cwd": "/Volumes/T72TB/show_must_go_on/take_this_red_pill/python",
+      "env": {
+        "OPENWEATHERMAP_API_KEY": "aff5d42d94e7e836a0d8045d4c1e35b9",
+        "PYTHONPATH": "/Volumes/T72TB/show_must_go_on/take_this_red_pill/python"
+      }
+    }
+  }
+}

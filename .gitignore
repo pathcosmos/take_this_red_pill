@@ -12,6 +12,16 @@ node_modules/
 # Environment variables
 .env
 
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Java/Gradle
+.gradle/
+build/
+*.class
+
 # Editor directories and files
 .idea
 .vscode

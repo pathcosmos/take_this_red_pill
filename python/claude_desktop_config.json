@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "weather-python": {
+      "command": "uvicorn",
+      "args": [
+        "src.main:app",
+        "--port",
+        "8000"
+      ],
+      "cwd": "/absolute/path/to/python",
+      "env": {
+        "OPENWEATHERMAP_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
